@@ -1,0 +1,5 @@
+package mxgo
+
+func main(){
+
+}
