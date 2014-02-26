@@ -1,8 +1,11 @@
 package mxgo
 
+var (
+	mxLog = NewMxLogger()
+)
 
 func Run(){
-	mxgoapp := NewMxGoApp()
-	mxgoapp.Run()
+	mxGoApp := NewMxGoApp()
+	mxGoApp.Run()
 }
 

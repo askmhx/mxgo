@@ -1,25 +1,30 @@
-package log
+package mxgo
 
-type Log struct {
+import (
+	"fmt"
+	"log"
+)
 
-}
-
-func NewLog() *Log{
-	return &Log{}
-}
-
-func (log Log)Error(){
+type MxLogger struct {
 
 }
 
-func (log Log)Trace(){
-
+func NewMxLogger() *MxLogger{
+	return &MxLogger{}
 }
 
-func (log Log)Info(){
-
+func (mxLog MxLogger)Error(strs ...interface{}){
+	fmt.Println("ERR ",strs)
 }
 
-func (log Log)Debug(){
+func (mxLog MxLogger)Trace(strs ...interface{}){
+	fmt.Println("TRA ",strs)
+}
 
+func (mxLog MxLogger)Info(strs ...interface{}){
+	fmt.Println("INF ",strs)
+}
+
+func (mxLog MxLogger)Debug(strs ...interface{}){
+	fmt.Println("DEB ",strs)
 }
