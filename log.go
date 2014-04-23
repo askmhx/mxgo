@@ -2,7 +2,7 @@ package mxgo
 
 import (
 	"fmt"
-	"log"
+//	"log"
 )
 
 type MxLogger struct {

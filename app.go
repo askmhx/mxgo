@@ -3,11 +3,11 @@ package mxgo
 import (
 	"net/http"
 	"fmt"
-	"strings"
-	"os"
-	"com.github/menghx/mxgo/mxhttp"
+	"com.github/menghx/mxgo/httplib"
 	"com.github/menghx/mxgo/router"
 	"com.github/menghx/mxgo/config"
+	"strings"
+	"os"
 )
 
 type MxGoApp struct{
@@ -16,54 +16,63 @@ type MxGoApp struct{
 	enableSSL bool
 	staticUrl string
 	router *router.Router
-	config map[string]string
+	config *config.Config
+	path string
 }
 
 func NewMxGoApp() *MxGoApp {
 	mxGo := &MxGoApp{}
-	mxGo.config = config.ParserConfig("app.conf")
+	currentPath,_ := os.Getwd()
+	mxGo.path = currentPath+"/src/blgo"
+	mxGo.config = config.NewConfig(mxGo.path+CONFIG_FILE)
+	mxGo.addr = mxGo.config.String(CONFIG_KEY_ADDR)
+	mxGo.port = mxGo.config.Int(CONFIG_KEY_PORT)
 	mxGo.router = router.NewRouter()
-	mxGo.router.ParserConfig("routes")
-	return &MxGoApp{}
+	mxGo.router.ParserConfig(mxGo.path+ROUTER_FILE)
+	return mxGo
 }
 
 func (mxGo *MxGoApp) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-	response := mxhttp.NewResponse(rw)
-	request := *mxhttp.NewRequest(req)
-	if Split(request.RequestURI,"/")[0] == mxGo.staticUrl || request.RequestURI == "favicon.ico"{
-		mxGo.executeStatic(response,request)
+	rw.Header().Add("Server",MXGO_SERVER_NAME)
+	var request = httplib.NewRequest(req)
+	var response = httplib.NewResponse(rw)
+	if strings.Split(request.RequestURI,"/")[0] == mxGo.staticUrl || request.RequestURI == "favicon.ico"{
+		mxGo.execStatic(request,response)
 		return;
 	}
-
-	mxGo.executeAction(response,request)
+	mxGo.execAction(request,response)
 }
 
 
 func (mxGo *MxGoApp) Run() {
-	server := &Server{
-		Addr:    fmt.Sprintf("%s:%d", mxGo.addr, mxGo.port),
+	server := &http.Server{
+		Addr:fmt.Sprintf("%s:%d", mxGo.addr, mxGo.port),
 		Handler:mxGo,
 	}
-	var err
+	var err error
 	if mxGo.enableSSL {
-		err = server.ListenAndServeTLS("", "")
+		certFile := mxGo.config.String(CONFIG_KEY_SSL_CERT_FILE) //parser from config
+		keyFile := mxGo.config.String(CONFIG_KEY_SSL_KEY_FILE) //parser from config
+		err = server.ListenAndServeTLS(certFile,keyFile)
 	}else {
 		err = server.ListenAndServe()
 	}
-	if err {
-		mxLog.Error("start server failed ", mxGo.addr, ":", mxGo.port)
+	if err == nil {
+		mxLog.Info("start server success ", server.Addr)
+	}else{
+		mxLog.Error("start server failed ", server.Addr)
 	}
 }
 
 
-func (mxGo *MxGoApp)executeStatic(resp mxhttp.Response, req *mxhttp.Request){
+func (mxGo *MxGoApp)execStatic(request *httplib.Request,response *httplib.Response){
 	//find static
 	//write static to response
 	//close
 }
 
 
-func (mxGo *MxGoApp)executeAction(resp mxhttp.Response, req *mxhttp.Request){
-	action := mxGo.router.FindAction(req.RequestURI)
+func (mxGo *MxGoApp)execAction(request *httplib.Request,response *httplib.Response){
+	action := mxGo.router.FindAction(request.RequestURI)
 	action()
 }

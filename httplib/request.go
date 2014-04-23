@@ -1,4 +1,4 @@
-package mxhttp
+package httplib
 
 import (
 	"net/http"
@@ -6,14 +6,14 @@ import (
 
 type Request struct{
 	*http.Request
-	UploadFiles map[string]File
+	UploadFiles map[string]http.File
 	Params map[string]interface {}
 	Session map[string]interface {}
 	Cookie map[string]string
 }
 
-func NewRequest(req *http.Request) Request{
+func NewRequest(req *http.Request) *Request{
 	request := &Request{}
 	request.Request = req
-	return &Response{}
+	return request
 }

@@ -1,4 +1,4 @@
-package model
+package mxgo
 
 type Model struct {
 

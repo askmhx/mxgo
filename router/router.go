@@ -4,7 +4,7 @@ type Router struct {
 
 }
 
-func NewRouter() Router{
+func NewRouter() *Router{
 	route := &Router{}
 	return route
 }

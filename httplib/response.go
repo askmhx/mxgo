@@ -1,4 +1,4 @@
-package mxhttp
+package httplib
 
 import (
 	"net/http"
@@ -9,7 +9,7 @@ type Response struct{
 	responseWriter http.ResponseWriter
 }
 
-func NewResponse(rw http.ResponseWriter) Response{
+func NewResponse(rw http.ResponseWriter) *Response{
 	response := &Response{}
 	response.responseWriter = rw
 	return response

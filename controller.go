@@ -1,9 +1,9 @@
 package mxgo
 
-import "com.github/menghx/mxgo/mxhttp"
+import "com.github/menghx/mxgo/httplib"
 
 type Controller struct {
-	request *mxhttp.Request
-	response *mxhttp.Response
+	request *httplib.Request
+	response *httplib.Response
 }
 

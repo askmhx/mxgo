@@ -1,4 +1,4 @@
-package mxhttp
+package httplib
 
 var (
 	HTTP_404 = "404"
