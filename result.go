@@ -1,36 +1,76 @@
 package mxgo
 
+import (
+	"html/template"
+	"com.github/menghx/mxgo/httplib"
+	"encoding/json"
+)
+
 type Result interface {
-	render() bool
+	Render() error
+}
+
+type BaseResult struct {
+	 response *httplib.Response
+	 Data interface {}
 }
 
 type XMLResult struct {
-
+	*BaseResult
 }
 
-func (xml *XMLResult) render() {
-
+func (result *XMLResult) Render() error{
+	return nil
 }
 
 
 type JSONResult struct {
-
+	*BaseResult
 }
 
-func (json *JSONResult) render(){
+func (result *JSONResult) Render() error{
+	bytes,err :=json.Marshal(result.Data)
+	if err {
+		return err
+	}
+	result.response.WriteText(string(bytes))
+ 	return nil
 }
 
 type TemplateResult struct {
-
+	*BaseResult
+	tplName string
 }
 
-func (template *TemplateResult) render(){
+func (result *TemplateResult) Render() error{
+	tpl := template.New(result.tplName)
+	return tpl.Execute(result.response,result.Data)
 }
 
 type PlainResult struct {
+	*BaseResult
+}
 
+func (result *PlainResult) Render() error{
+	result.response.WriteText(result.Data)
+	return nil
 }
 
 
-func (plain *PlainResult) render(){
+type RedirectResult struct {
+	*BaseResult
+}
+
+func (result *RedirectResult) Render() error{
+	result.response.WriteText(result.Data)
+	return nil
+}
+
+type ForwardResult struct {
+	*BaseResult
+}
+
+func (result *ForwardResult) Render() error{
+	result.response.WriteText(result.Data)
+	return nil
 }

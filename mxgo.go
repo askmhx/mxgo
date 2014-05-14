@@ -15,6 +15,14 @@ var (
 	mxLog = NewMxLogger()
 )
 
+func AddRoute(method string,uri string,action string){
+
+}
+
+func EnableAdmin(enabled bool){
+
+}
+
 func Run(){
 	mxGoApp := NewMxGoApp()
 	mxGoApp.Run()

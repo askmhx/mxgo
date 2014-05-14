@@ -15,6 +15,11 @@ func NewResponse(rw http.ResponseWriter) *Response{
 	return response
 }
 
-func (resp *Response) writeFile(fileName string){
+func (resp *Response) WriteFile(filePath string){
+	resp.Write(resp.responseWriter)
+}
+
+
+func (resp *Response) WriteText(text string){
 	resp.Write(resp.responseWriter)
 }
