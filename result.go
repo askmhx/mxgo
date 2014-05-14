@@ -30,7 +30,7 @@ type JSONResult struct {
 
 func (result *JSONResult) Render() error{
 	bytes,err :=json.Marshal(result.Data)
-	if err {
+	if err!=nil {
 		return err
 	}
 	result.response.WriteText(string(bytes))
@@ -44,7 +44,7 @@ type TemplateResult struct {
 
 func (result *TemplateResult) Render() error{
 	tpl := template.New(result.tplName)
-	return tpl.Execute(result.response,result.Data)
+	return tpl.Execute(result.response.ResponseWriter,result.Data)
 }
 
 type PlainResult struct {

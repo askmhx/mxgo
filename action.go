@@ -3,12 +3,13 @@ package mxgo
 import "reflect"
 
 type Action struct {
-	controller *Controller
-	method string
+	CtrlName string
+	FuncName string
 }
 
 func (action *Action)Execute(){
-	result := reflect.ValueOf(&action.controller).MethodByName(action.method)
+	ctl := reflect.ValueOf(&action.CtrlName)
+	result := ctl.Call()
 	err := result.render()
 	if err {
 		action.handleError(err)

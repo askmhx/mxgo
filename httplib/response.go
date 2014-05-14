@@ -6,20 +6,20 @@ import (
 
 type Response struct{
 	*http.Response
-	responseWriter http.ResponseWriter
+	ResponseWriter http.ResponseWriter
 }
 
 func NewResponse(rw http.ResponseWriter) *Response{
 	response := &Response{}
-	response.responseWriter = rw
+	response.ResponseWriter = rw
 	return response
 }
 
 func (resp *Response) WriteFile(filePath string){
-	resp.Write(resp.responseWriter)
+	resp.Write(resp.ResponseWriter)
 }
 
 
 func (resp *Response) WriteText(text string){
-	resp.Write(resp.responseWriter)
+	resp.Write(resp.ResponseWriter)
 }
