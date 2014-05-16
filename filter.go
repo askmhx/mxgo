@@ -1,7 +1,8 @@
 package mxgo
 
+
 type Filter interface {
-	Execute(action Action)
+	Execute(action *Action)
 }
 
 const (
@@ -19,20 +20,20 @@ func NewFilterManager() *FilterManager{
 	return fm
 }
 
-func (fm *FilterManager)AddFilter(filters ...Filter){
+func (fm *FilterManager)AddFilter(filters []Filter){
 	for i := range filters{
-		append(fm.filters,filters[i])
+		fm.filters = append(fm.filters,filters[i])
 	}
 }
 
-func (fm *FilterManager)BeforeAction(action Action){
+func (fm *FilterManager)BeforeAction(action *Action){
 	for i := range fm.filters{
 		flt := fm.filters[i]
 		flt.Execute(action)
 	}
 }
 
-func (fm *FilterManager)AfterAction(action Action){
+func (fm *FilterManager)AfterAction(action *Action){
 	for i := range fm.filters{
 		flt := fm.filters[i]
 		flt.Execute(action)

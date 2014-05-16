@@ -1,9 +1,20 @@
-package mxgo
+package controllers
+
+import (
+	"github.com/menghx/mxgo"
+	"strings"
+)
 
 type StaticController struct {
-	*Controller
+	*mxgo.Controller
 }
 
-func (stc *StaticController)handle() Result{
-	return nil
+func (stc *StaticController)Handle() Result{
+	uriPath := strings.Split(stc.request.RequestURI,"/")
+	if uriPath[0] == "favicon.ico" {
+
+	}else if uriPath[0]==mxgo.AppCfg.String("static.uri","static"){
+		stc.Data = ""
+	}
+	return stc.Static()
 }

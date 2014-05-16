@@ -17,6 +17,14 @@ func NewConfig(configPath string) *Config {
 	return config
 }
 
+func (config *Config) String(key string,defValue string) string {
+	value := config.String(key)
+	if value==nil {
+		return defValue
+	}
+	return value
+}
+
 func (config *Config) String(key string) string {
 	for _,kv := range config.data {
 		for k, v := range kv {
@@ -25,7 +33,7 @@ func (config *Config) String(key string) string {
 			}
 		}
 	}
-	return ""
+	return nil
 }
 
 func (config *Config) Int(key string) int {

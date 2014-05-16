@@ -1,7 +1,7 @@
 package mxgo
 
 import (
-	"com.github/menghx/mxgo/httplib"
+	"github.com/menghx/mxgo/httplib"
 	"strings"
 )
 
@@ -22,48 +22,46 @@ func NewRouterManager() *RouterManager{
 	return rm
 }
 
-func (rm *RouterManager)AddRoute(uriPattern string,httpMethod string,action string){
+func (rm *RouterManager)Router(uriPattern string,httpMethod string,action string){
 	route := router{}
 	route.UriPattern = uriPattern
 	route.HttpMethod = httpMethod
 	actionPattern := strings.Split(action,".")
 	route.CtrlName = actionPattern[0]
 	route.FuncName = actionPattern[1]
-	append(rm.routes,route)
+	rm.routes = append(rm.routes,route)
 }
 
-func (rm *RouterManager)DelRoute(uri string){
-	for i := range rm.routes{
-		r := rm.routes[i]
-		if r.UriPattern == uri {
-			//delete(r)
-			//need delete cache here url->action
-		}
-	}
-}
-
-func (rm *RouterManager)FindAction(request *httplib.Request,response *httplib.Response) Action{
+func (rm *RouterManager)FindAction(request *httplib.Request,response *httplib.Response) *Action{
 	inMethod := request.Method
 	inUri := request.RequestURI
 	//need cache here url->action
-	for r := range rm.routes{
-		if r.UriPattern == inUri {
+	for i := range rm.routes{
+		r := rm.routes[i]
+		if rm.matchPattern(r.UriPattern,inUri) {
 			if r.HttpMethod == inMethod || r.HttpMethod== "*" {
 				action := &Action{}
 				action.CtrlName = r.CtrlName
 				action.FuncName = r.FuncName
 				return action
 			}else{
-				return ErrorAction(405,inUri+":use http:"+inMethod+" not allowed")
+				return rm.errorAction(405,inUri+":use http:"+inMethod+" not allowed")
 			}
 		}
 	}
-	return ErrorAction(404,inUri+":action not found");
+	return rm.errorAction(404,inUri+":action not found");
 }
 
-func ErrorAction(errorCode int,errMsg string) Action{
+func (rm *RouterManager)matchPattern(pattern,uri string) bool{
+	if pattern==uri || strings.HasPrefix(uri,pattern) {
+		return true
+	}
+	return false
+}
+
+func (rm *RouterManager)errorAction(errorCode int,errMsg string) *Action{
 	action := &Action{}
 	action.CtrlName = "ErrorController"
-	action.FuncName = "handle"
+	action.FuncName = "Handle"
 	return action;
 }

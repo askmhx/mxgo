@@ -2,8 +2,9 @@ package mxgo
 
 import (
 	"html/template"
-	"com.github/menghx/mxgo/httplib"
+	"github.com/menghx/mxgo/httplib"
 	"encoding/json"
+	"errors"
 )
 
 type Result interface {
@@ -11,7 +12,8 @@ type Result interface {
 }
 
 type BaseResult struct {
-	 response *httplib.Response
+	 Request *httplib.Request
+	 Response *httplib.Response
 	 Data interface {}
 }
 
@@ -19,7 +21,7 @@ type XMLResult struct {
 	*BaseResult
 }
 
-func (result *XMLResult) Render() error{
+func (result XMLResult) Render() error{
 	return nil
 }
 
@@ -28,12 +30,12 @@ type JSONResult struct {
 	*BaseResult
 }
 
-func (result *JSONResult) Render() error{
+func (result JSONResult) Render() error{
 	bytes,err :=json.Marshal(result.Data)
 	if err!=nil {
 		return err
 	}
-	result.response.WriteText(string(bytes))
+	result.Response.WriteText(string(bytes))
  	return nil
 }
 
@@ -42,18 +44,21 @@ type TemplateResult struct {
 	tplName string
 }
 
-func (result *TemplateResult) Render() error{
+func (result TemplateResult) Render() error{
 	tpl := template.New(result.tplName)
-	return tpl.Execute(result.response.ResponseWriter,result.Data)
+	return tpl.Execute(result.Response.ResponseWriter,result.Data)
 }
 
 type PlainResult struct {
 	*BaseResult
 }
 
-func (result *PlainResult) Render() error{
-	result.response.WriteText(result.Data)
-	return nil
+func (result PlainResult) Render() error{
+	dt,found := result.Data.(string)
+	if found {
+		result.Response.WriteText(dt)
+	}
+	return errors.New("result data type error")
 }
 
 
@@ -61,16 +66,34 @@ type RedirectResult struct {
 	*BaseResult
 }
 
-func (result *RedirectResult) Render() error{
-	result.response.WriteText(result.Data)
-	return nil
+func (result RedirectResult) Render() error{
+	dt,found := result.Data.(string)
+	if found {
+		result.Response.WriteText(dt)
+	}
+	return errors.New("result data type error")
 }
 
 type ForwardResult struct {
 	*BaseResult
 }
 
-func (result *ForwardResult) Render() error{
-	result.response.WriteText(result.Data)
-	return nil
+func (result ForwardResult) Render() error{
+	dt,found := result.Data.(string)
+	if found {
+		result.Response.WriteText(dt)
+	}
+	return errors.New("result data type error")
+}
+
+type StaticResult struct {
+	*BaseResult
+}
+
+func (result StaticResult) Render() error{
+	dt,found := result.Data.(string)
+	if found {
+		result.Response.WriteFile(dt)
+	}
+	return errors.New("result data type error")
 }

@@ -3,30 +3,41 @@ package mxgo
 import (
 	"net/http"
 	"fmt"
-	"com.github/menghx/mxgo/httplib"
-	"com.github/menghx/mxgo/config"
+	"github.com/menghx/mxgo/httplib"
+	"github.com/menghx/mxgo/config"
 	"os"
 	"time"
+	"path"
 )
 
+const (
+	MxGoVersion = "0.0.1"
+	MxGoServerName = "MxGo"
+	MxGoImportPath = "github.com/menghx/mxgo"
+)
+
+
 type MxGoApp struct{
+	AppName string
+	AppPath   string
 	addr      string
 	port      int
 	enableSSL bool
-	staticUrl string
+	StaticUri string
+	Cfg *config.Config
 	Rm *RouterManager
 	Fm *FilterManager
-	cfg *config.Config
-	path      string
 }
 
 func NewMxGoApp() *MxGoApp {
 	mxGo := &MxGoApp{}
 	currentPath, _ := os.Getwd()
-	mxGo.path = currentPath+"/src/blgo"
-	mxGo.cfg = config.NewConfig(mxGo.path+MXGO_APP_CONFIG_FILE)
-	mxGo.addr = mxGo.cfg.String(MXGO_APP_CONFIG_KEY_ADDR)
-	mxGo.port = mxGo.cfg.Int(MXGO_APP_CONFIG_KEY_PORT)
+	mxGo.AppPath = path.Join(currentPath,"src","blgo")
+	mxGo.Cfg = config.NewConfig(path.Join(mxGo.AppPath,"conf","app.conf"))
+	mxGo.AppName = mxGo.Cfg.String("name")
+	mxGo.StaticUri = mxGo.Cfg.String("static.uri")
+	mxGo.addr = mxGo.Cfg.String("addr")
+	mxGo.port = mxGo.Cfg.Int("port")
 	mxGo.Rm = NewRouterManager()
 	mxGo.initRouter()
 	mxGo.Fm = NewFilterManager()
@@ -34,15 +45,14 @@ func NewMxGoApp() *MxGoApp {
 }
 
 func (mxGO *MxGoApp)initRouter(){
-	mxGO.Rm.AddRoute("/error/*","*","ErrorController.Handle")//erorr
-	mxGO.Rm.AddRoute("/static/*","*","StaticController.Handle")//static
+	mxGO.Rm.Router("/error/*","*","ErrorController.Handle")//erorr
+	mxGO.Rm.Router(mxGO.StaticUri,"*","StaticController.Handle")//static
+	mxGO.Rm.Router("/favicon.ico","*","StaticController.Handle")//static
 }
 
 func (mxGo *MxGoApp)EnableAdmin(enable bool){
 	if enable {
-		mxGo.Rm.AddRoute("/admin/*","*","AdminController.Handle")
-	}else{
-		mxGo.Rm.DelRoute("/admin/*")
+		mxGo.Rm.Router("/admin/*","*","AdminController.Handle")
 	}
 }
 
@@ -59,8 +69,8 @@ func (mxGo *MxGoApp) Run() {
 	}()
 
 	if mxGo.enableSSL {
-		certFile := mxGo.cfg.String(MXGO_APP_CONFIG_KEY_SSL_CERT_FILE) //parser from config
-		keyFile := mxGo.cfg.String(MXGO_APP_CONFIG_KEY_SSL_KEY_FILE) //parser from config
+		certFile := mxGo.Cfg.String("ssl.cert_file") //parser from config
+		keyFile := mxGo.Cfg.String("ssl.key_file") //parser from config
 		err = server.ListenAndServeTLS(certFile, keyFile)
 	}else {
 		err = server.ListenAndServe()
@@ -72,10 +82,10 @@ func (mxGo *MxGoApp) Run() {
 
 
 func (mxGo *MxGoApp) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
-	rw.Header().Add("Server", MXGO_SERVER_NAME)
+	rw.Header().Add("Server", MxGoServerName)
 	var request = httplib.NewRequest(req)
 	var response = httplib.NewResponse(rw)
-	mxLog.Debug(request.URL, request.RequestURI)
+	mxLog.Debug("ServeHTTP:",request.URL)
 	if SecurityVerify(request, response){
 		mxGo.execAction(request, response)
 	}

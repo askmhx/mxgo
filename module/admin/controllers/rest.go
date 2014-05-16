@@ -1,6 +1,6 @@
 package controllers
 
-import "com.github/menghx/mxgo"
+import "github.com/menghx/mxgo"
 
 type Rest struct {
 	*mxgo.Controller

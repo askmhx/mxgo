@@ -1,6 +1,5 @@
 package mxgo
 
-import "reflect"
 
 type Action struct {
 	CtrlName string
@@ -8,12 +7,12 @@ type Action struct {
 }
 
 func (action *Action)Execute(){
-	ctl := reflect.ValueOf(&action.CtrlName)
-	result := ctl.Call()
-	err := result.render()
-	if err {
-		action.handleError(err)
-	}
+	mxLog.Debug("ACTION:",action.CtrlName+"."+action.FuncName)
+//	result := ctl.Call()
+//	err := result.render()
+//	if err {
+//		action.handleError(err)
+//	}
 }
 
 func (action *Action)handleError(err error){
