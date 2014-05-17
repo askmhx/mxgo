@@ -7,8 +7,8 @@ var (
 	AppCfg = app.Cfg
 )
 
-func AddFilter(filters ...Filter){
-	app.Fm.AddFilter(filters)
+func AddFilter(filter ...Filter){
+	app.Fm.AddFilter(filter...)
 }
 
 func Router(uri string,method string,action string){

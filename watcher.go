@@ -1,30 +1,32 @@
 package mxgo
 
 import (
-	"log"
 	"github.com/howeyc/fsnotify"
 )
 
 
-func Watch(callBack interface {},filePath ...string){
+
+func WatchWorker(filePaths ...string){
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
-		log.Fatal(err)
+		mxLog.Error(err)
 	}
 
 	go func() {
 		for {
 			select {
 			case ev := <-watcher.Event:
-				log.Println("event:", ev)
+				mxLog.Info("event:", ev)
 			case err := <-watcher.Error:
-				log.Println("error:", err)
+				mxLog.Error("error:", err)
 			}
 		}
 	}()
-
-	err = watcher.Watch(filePath)
-	if err != nil {
-		log.Fatal(err)
+    for i := range filePaths{
+		err = watcher.Watch(filePaths[i])
+		if err != nil {
+			mxLog.Error(err)
+		}
 	}
+
 }

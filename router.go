@@ -36,8 +36,7 @@ func (rm *RouterManager)FindAction(request *httplib.Request,response *httplib.Re
 	inMethod := request.Method
 	inUri := request.RequestURI
 	//need cache here url->action
-	for i := range rm.routes{
-		r := rm.routes[i]
+	for _,r := range rm.routes{
 		if rm.matchPattern(r.UriPattern,inUri) {
 			if r.HttpMethod == inMethod || r.HttpMethod== "*" {
 				action := &Action{}

@@ -20,22 +20,20 @@ func NewFilterManager() *FilterManager{
 	return fm
 }
 
-func (fm *FilterManager)AddFilter(filters []Filter){
-	for i := range filters{
-		fm.filters = append(fm.filters,filters[i])
+func (fm *FilterManager)AddFilter(filters ...Filter){
+	for _,filter := range filters{
+		fm.filters = append(fm.filters,filter)
 	}
 }
 
 func (fm *FilterManager)BeforeAction(action *Action){
-	for i := range fm.filters{
-		flt := fm.filters[i]
-		flt.Execute(action)
+	for _,filter:= range fm.filters{
+		filter.Execute(action)
 	}
 }
 
 func (fm *FilterManager)AfterAction(action *Action){
-	for i := range fm.filters{
-		flt := fm.filters[i]
-		flt.Execute(action)
+	for _,filter:= range fm.filters{
+		filter.Execute(action)
 	}
 }

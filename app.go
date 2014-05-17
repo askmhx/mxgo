@@ -38,10 +38,20 @@ func NewMxGoApp() *MxGoApp {
 	mxGo.StaticUri = mxGo.Cfg.String("static.uri")
 	mxGo.addr = mxGo.Cfg.String("addr")
 	mxGo.port = mxGo.Cfg.Int("port")
+	mxGo.Fm = NewFilterManager()
 	mxGo.Rm = NewRouterManager()
 	mxGo.initRouter()
-	mxGo.Fm = NewFilterManager()
+	mxGo.initWatch()
 	return mxGo
+}
+
+func (mxGo *MxGoApp)initWatch(){
+	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/app/controllers")
+	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/conf")
+	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/app")
+	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/github.com/menghx/mxgo")
+	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/github.com/menghx/mxgo/controllers")
+	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/github.com/menghx/mxgo/httplib")
 }
 
 func (mxGO *MxGoApp)initRouter(){

@@ -1,10 +1,12 @@
 package mxgo
 
-func BuildSource(path string){
+import "fmt"
 
+func buildSource(path string){
+	fmt.Println("")
 }
 
 
-func GenAction(){
-
+func genAction(){
+	fmt.Println("")
 }
