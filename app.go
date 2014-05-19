@@ -27,6 +27,7 @@ type MxGoApp struct{
 	Cfg *config.Config
 	Rm *RouterManager
 	Fm *FilterManager
+	cotter *Cotter
 }
 
 func NewMxGoApp() *MxGoApp {
@@ -41,18 +42,11 @@ func NewMxGoApp() *MxGoApp {
 	mxGo.Fm = NewFilterManager()
 	mxGo.Rm = NewRouterManager()
 	mxGo.initRouter()
-	mxGo.initWatch()
+	mxGo.cotter = NewCotter()
+	mxGo.cotter.startWatchTask()
 	return mxGo
 }
 
-func (mxGo *MxGoApp)initWatch(){
-	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/app/controllers")
-	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/conf")
-	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/app")
-	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/github.com/menghx/mxgo")
-	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/github.com/menghx/mxgo/controllers")
-	WatchWorker("/Users/MengHX/WorkSpace/GOWork/mxgo/src/github.com/menghx/mxgo/httplib")
-}
 
 func (mxGO *MxGoApp)initRouter(){
 	mxGO.Rm.Router("/error/*","*","ErrorController.Handle")//erorr

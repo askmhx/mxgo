@@ -1,4 +1,5 @@
-package controllers
+package controller
+
 import "strconv"
 import "github.com/menghx/mxgo"
 

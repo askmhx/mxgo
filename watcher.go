@@ -4,9 +4,10 @@ import (
 	"github.com/howeyc/fsnotify"
 )
 
+type WatchAction func(filePath string,event *fsnotify.FileEvent)
 
 
-func WatchWorker(filePaths ...string){
+func WatchDoTask(callback WatchAction,filePaths ...string){
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		mxLog.Error(err)
@@ -16,7 +17,7 @@ func WatchWorker(filePaths ...string){
 		for {
 			select {
 			case ev := <-watcher.Event:
-				mxLog.Info("event:", ev)
+				callback(ev.Name,ev)
 			case err := <-watcher.Error:
 				mxLog.Error("error:", err)
 			}
