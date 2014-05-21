@@ -2,7 +2,7 @@ package mxgo
 
 
 type Filter interface {
-	Execute(action *Action)
+	Execute(ctrl *Controller)
 }
 
 const (
@@ -26,14 +26,14 @@ func (fm *FilterManager)AddFilter(filters ...Filter){
 	}
 }
 
-func (fm *FilterManager)BeforeAction(action *Action){
+func (fm *FilterManager)BeforeAction(ctrl *Controller){
 	for _,filter:= range fm.filters{
-		filter.Execute(action)
+		filter.Execute(ctrl)
 	}
 }
 
-func (fm *FilterManager)AfterAction(action *Action){
+func (fm *FilterManager)AfterAction(ctrl *Controller){
 	for _,filter:= range fm.filters{
-		filter.Execute(action)
+		filter.Execute(ctrl)
 	}
 }

@@ -2,12 +2,11 @@ package mxgo
 
 import (
 	"github.com/howeyc/fsnotify"
+	"path"
+	"strings"
 )
 
-type WatchAction func(filePath string,event *fsnotify.FileEvent)
-
-
-func WatchDoTask(callback WatchAction,filePaths ...string){
+func WatchDoTask(callback func(filePath string, event *fsnotify.FileEvent), filePaths ...string) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		mxLog.Error(err)
@@ -17,13 +16,15 @@ func WatchDoTask(callback WatchAction,filePaths ...string){
 		for {
 			select {
 			case ev := <-watcher.Event:
-				callback(ev.Name,ev)
-			case err := <-watcher.Error:
-				mxLog.Error("error:", err)
+				if !strings.HasPrefix(path.Base(ev.Name), ".") {
+					callback(ev.Name, ev)
+				}
+			case <-watcher.Error:
+				continue
 			}
 		}
 	}()
-    for i := range filePaths{
+	for i := range filePaths {
 		err = watcher.Watch(filePaths[i])
 		if err != nil {
 			mxLog.Error(err)
