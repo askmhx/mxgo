@@ -24,17 +24,21 @@ func (cotter Cotter) startWatchTask() {
 				}
 			}
 		},
-		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo",
-		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/app",
-		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/conf",
-		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/app/controller",
-		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/app/admin",
-		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/app/filter",
-		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/app/model",
-		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blgo/app/view",
+		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blog",
+		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blog/app",
+		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blog/conf",
+		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blog/app/controller",
+		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blog/app/admin",
+		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blog/app/filter",
+		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blog/app/model",
+		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/blog/app/view",
 		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/github.com/menghx/mxgo",
 		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/github.com/menghx/mxgo/httplib",
 		"/Users/MengHX/WorkSpace/GOWork/mxgo/src/github.com/menghx/mxgo/controller")
+}
+
+func (cotter Cotter)isExecWithBin() bool{
+	return false
 }
 
 

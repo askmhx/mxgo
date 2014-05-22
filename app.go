@@ -33,7 +33,7 @@ type MxGoApp struct{
 func NewMxGoApp() *MxGoApp {
 	mxGo := &MxGoApp{}
 	currentPath, _ := os.Getwd()
-	mxGo.AppPath = path.Join(currentPath,"src","blgo")
+	mxGo.AppPath = path.Join(currentPath,"src","blog")
 	mxGo.Cfg = config.NewConfig(path.Join(mxGo.AppPath,"conf","app.conf"))
 	mxGo.AppName = mxGo.Cfg.String("name")
 	mxGo.StaticUri = mxGo.Cfg.String("static.uri")
@@ -98,7 +98,5 @@ func (mxGo *MxGoApp) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 
 func (mxGo *MxGoApp) execAction(request *httplib.Request, response *httplib.Response) {
 	action := mxGo.Rm.FindAction(request,response)
-	mxGo.Fm.BeforeAction(action)
-	action.Execute()
-	mxGo.Fm.AfterAction(action)
+	action.Execute(mxGo)
 }
