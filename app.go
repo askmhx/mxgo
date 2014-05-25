@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"github.com/menghx/mxgo/httplib"
 	"github.com/menghx/mxgo/config"
-	"os"
 	"time"
 	"path"
+	"github.com/menghx/mxgo/controller"
+	adminctrl "github.com/menghx/mxgo/module/admin/controllers"
 )
 
 const (
@@ -19,7 +20,7 @@ const (
 
 type MxGoApp struct{
 	AppName string
-	AppPath   string
+	AppHome   string
 	addr      string
 	port      int
 	enableSSL bool
@@ -32,9 +33,10 @@ type MxGoApp struct{
 
 func NewMxGoApp() *MxGoApp {
 	mxGo := &MxGoApp{}
-	currentPath, _ := os.Getwd()
-	mxGo.AppPath = path.Join(currentPath,"src","blog")
-	mxGo.Cfg = config.NewConfig(path.Join(mxGo.AppPath,"conf","app.conf"))
+	mxGo.cotter = NewCotter()
+	mxGo.AppHome = mxGo.cotter.appHome
+	mxGo.cotter.watchApp()
+	mxGo.Cfg = config.NewConfig(path.Join(mxGo.AppHome,"conf","app.conf"))
 	mxGo.AppName = mxGo.Cfg.String("name")
 	mxGo.StaticUri = mxGo.Cfg.String("static.uri")
 	mxGo.addr = mxGo.Cfg.String("addr")
@@ -42,21 +44,19 @@ func NewMxGoApp() *MxGoApp {
 	mxGo.Fm = NewFilterManager()
 	mxGo.Rm = NewRouterManager()
 	mxGo.initRouter()
-	mxGo.cotter = NewCotter()
-	mxGo.cotter.startWatchTask()
 	return mxGo
 }
 
 
 func (mxGO *MxGoApp)initRouter(){
-	mxGO.Rm.Router("/error/*","*","ErrorController.Handle")//erorr
-	mxGO.Rm.Router(mxGO.StaticUri,"*","StaticController.Handle")//static
-	mxGO.Rm.Router("/favicon.ico","*","StaticController.Handle")//static
+	mxGO.Rm.Router("*:/error/*",&controller.Error{},"Handle")//erorr
+	mxGO.Rm.Router("*:"+mxGO.StaticUri,&controller.Static{},"Handle")//erorr
+	mxGO.Rm.Router("GET:/favicon.ico",&controller.Static{},"Handle")//static
 }
 
 func (mxGo *MxGoApp)EnableAdmin(enable bool){
 	if enable {
-		mxGo.Rm.Router("/admin/*","*","AdminController.Handle")
+		mxGo.Rm.Router("*:/admin/*",&adminctrl.Rest{},"Handle")//erorr
 	}
 }
 

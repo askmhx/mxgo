@@ -5,11 +5,11 @@ import (
 	"strings"
 )
 
-type StaticController struct {
-	*mxgo.Controller
+type Static struct {
+	mxgo.Controller
 }
 
-func (stc *StaticController)Handle() Result{
+func (stc *Static)Handle() Result{
 	uriPath := strings.Split(stc.request.RequestURI,"/")
 	if uriPath[0] == "favicon.ico" {
 

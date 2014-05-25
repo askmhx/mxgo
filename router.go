@@ -3,12 +3,13 @@ package mxgo
 import (
 	"github.com/menghx/mxgo/httplib"
 	"strings"
+	"github.com/menghx/mxgo/controller"
 )
 
 type router struct {
 	UriPattern string
 	HttpMethod string
-	CtrlName string
+	CtrlName Controller
 	FuncName string
 }
 
@@ -22,13 +23,13 @@ func NewRouterManager() *RouterManager{
 	return rm
 }
 
-func (rm *RouterManager)Router(uriPattern string,httpMethod string,action string){
+func (rm *RouterManager)Router(uriPattern string,ctrl ControllerInterface,funcName string){
 	route := router{}
-	route.UriPattern = uriPattern
-	route.HttpMethod = httpMethod
-	actionPattern := strings.Split(action,".")
-	route.CtrlName = actionPattern[0]
-	route.FuncName = actionPattern[1]
+	p := strings.Split(uriPattern,":")//METHOD:URI
+	route.HttpMethod = p[0]
+	route.UriPattern = p[1]
+	route.CtrlName = ctrl
+	route.FuncName = funcName
 	rm.routes = append(rm.routes,route)
 }
 
@@ -60,7 +61,7 @@ func (rm *RouterManager)matchPattern(pattern,uri string) bool{
 
 func (rm *RouterManager)errorAction(errorCode int,errMsg string) *Action{
 	action := &Action{}
-	action.CtrlName = "ErrorController"
+	action.CtrlName = &controller.Error{}
 	action.FuncName = "Handle"
 	return action;
 }

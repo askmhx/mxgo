@@ -2,6 +2,16 @@ package mxgo
 
 import "github.com/menghx/mxgo/httplib"
 
+type ControllerInterface interface {
+	Json() Result
+	XML() Result
+	Template() Result
+	Redirect() Result
+	Forward() Result
+	Plain() Result
+	Static() Result
+}
+
 type Controller struct {
 	Request *httplib.Request
 	Response *httplib.Response

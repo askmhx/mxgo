@@ -1,6 +1,5 @@
 package mxgo
 
-
 var (
 	mxLog = NewMxLogger()
 	app = NewMxGoApp()
@@ -11,8 +10,8 @@ func AddFilter(filter ...Filter){
 	app.Fm.AddFilter(filter...)
 }
 
-func Router(uri string,method string,action string){
-	app.Rm.Router(uri,method,action)
+func Router(uriPattern string,ctrl ControllerInterface,funcName string){
+	app.Rm.Router(uriPattern,ctrl,funcName)
 }
 
 func EnableAdmin(enabled bool){
