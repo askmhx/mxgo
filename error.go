@@ -1,15 +1,16 @@
-package controller
+package mxgo
 
-import "strconv"
-import "github.com/menghx/mxgo"
+import (
+	"strconv"
+)
 
-type Error struct {
-	mxgo.Controller
+type ErrorController struct {
+	Controller
 }
 
-func (errc *Error)Handle(errorCode string) Result{
+func (errc ErrorController)Handle(errorCode string) Result{
 	ec,err := strconv.Atoi(errorCode)
-	if err {
+	if err != nil {
 		panic(err)
 	}
 	switch {

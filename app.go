@@ -3,12 +3,10 @@ package mxgo
 import (
 	"net/http"
 	"fmt"
-	"github.com/menghx/mxgo/httplib"
-	"github.com/menghx/mxgo/config"
 	"time"
 	"path"
-	"github.com/menghx/mxgo/controller"
-	adminctrl "github.com/menghx/mxgo/module/admin/controllers"
+	"github.com/menghx/mxgo/config"
+	"github.com/menghx/mxgo/httplib"
 )
 
 const (
@@ -49,14 +47,14 @@ func NewMxGoApp() *MxGoApp {
 
 
 func (mxGO *MxGoApp)initRouter(){
-	mxGO.Rm.Router("*:/error/*",&controller.Error{},"Handle")//erorr
-	mxGO.Rm.Router("*:"+mxGO.StaticUri,&controller.Static{},"Handle")//erorr
-	mxGO.Rm.Router("GET:/favicon.ico",&controller.Static{},"Handle")//static
+	mxGO.Rm.Router("*:/error/*",&ErrorController{},"Handle")//erorr
+	mxGO.Rm.Router("*:"+mxGO.StaticUri,&StaticController{},"Handle")//erorr
+	mxGO.Rm.Router("GET:/favicon.ico",&StaticController{},"Handle")//static
 }
 
 func (mxGo *MxGoApp)EnableAdmin(enable bool){
 	if enable {
-		mxGo.Rm.Router("*:/admin/*",&adminctrl.Rest{},"Handle")//erorr
+		mxGo.Rm.Router("*:/admin/*",&AdminController{},"Handle")//erorr
 	}
 }
 
