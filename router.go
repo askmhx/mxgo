@@ -39,16 +39,13 @@ func (rm *RouterManager)FindAction(request *httplib.Request,response *httplib.Re
 	for _,r := range rm.routes{
 		if rm.matchPattern(r.UriPattern,inUri) {
 			if r.HttpMethod == inMethod || r.HttpMethod== "*" {
-				action := &Action{}
-				action.CtrlName = r.CtrlName
-				action.FuncName = r.FuncName
-				return action
+				return NewAction(r.CtrlName,r.FuncName)
 			}else{
-				return rm.errorAction(405,inUri+":use http:"+inMethod+" not allowed")
+				return ErrorAction(405,inUri+":use http:"+inMethod+" not allowed")
 			}
 		}
 	}
-	return rm.errorAction(404,inUri+":action not found");
+	return ErrorAction(404,inUri+":action not found")
 }
 
 func (rm *RouterManager)matchPattern(pattern,uri string) bool{
@@ -56,11 +53,4 @@ func (rm *RouterManager)matchPattern(pattern,uri string) bool{
 		return true
 	}
 	return false
-}
-
-func (rm *RouterManager)errorAction(errorCode int,errMsg string) *Action{
-	action := &Action{}
-	action.CtrlName = &ErrorController{}
-	action.FuncName = "Handle"
-	return action;
 }

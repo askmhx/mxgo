@@ -12,7 +12,6 @@ import (
 type Cotter struct {
 	appHome string
 	binPath string
-	ctrlsMap map[string]Controller
 }
 
 func NewCotter() *Cotter {
@@ -23,7 +22,7 @@ func NewCotter() *Cotter {
 }
 
 func (cotter Cotter) watchApp() {
-	cotter.genAction()
+//	cotter.genAction()
 	watchPaths := []string{}
 	watchPaths = append(watchPaths,cotter.appHome)
 	watchPaths = append(watchPaths,filepath.Join(cotter.appHome,"app"))
@@ -71,14 +70,10 @@ func (cotter Cotter) genAction() {
 }
 
 func (cotter Cotter)getAppHome() string{
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	mxLog.Debug(dir,err,os.Args)
 	return "/Users/MengHX/WorkSpace/GOWork/mxgo/src/blog"
 }
 
 func (cotter Cotter)getBinPath() string{
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	mxLog.Debug(dir,err,os.Args)
 	return "/Users/MengHX/WorkSpace/GOWork/mxgo/bin/blog"
 }
 
@@ -89,6 +84,4 @@ func (cotter Cotter)startApp(){
 func (cotter Cotter)stopApp(){
 	mxLog.Debug("cotter stop app")
 }
-
-var action = "var CtrlsMap = map[string]Controller{\"%s\":%s}"
 
